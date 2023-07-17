@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { nsolucoesApi } from "../services/api";
 
 function generateUniqueId() {
@@ -7,17 +7,19 @@ function generateUniqueId() {
 
 export default function useSession() {
     const [qrcode, setQrcode] = useState<string | undefined>(undefined)
-    const [sessionId, setSessionId] = useState<string>('')
+    const sessionId= useRef<string>('')
     const [jid, setJid] = useState<string | undefined>(undefined)
 
     const searchQrCode = async () => {
         try {
-            const uniqueId = generateUniqueId()
-            setSessionId(uniqueId)
-            const response = await nsolucoesApi.post<{ qr: string }>('/sessions/add', {
-                sessionId: uniqueId
-            })
-            setQrcode(response.data.qr)
+            if(sessionId.current === ''){
+                const uniqueId = generateUniqueId()
+                sessionId.current = uniqueId
+                const response = await nsolucoesApi.post<{ qr: string }>('/sessions/add', {
+                    sessionId: sessionId.current
+                })
+                setQrcode(response.data.qr)
+            }
         } catch (error: any) {
             console.log(error)
         }
@@ -34,7 +36,7 @@ export default function useSession() {
 
     const checkQrCode = async () => {
         try {
-            const response = await nsolucoesApi.get<CheckStatusResponseType>(`/sessions/${sessionId}/status`)
+            const response = await nsolucoesApi.get<CheckStatusResponseType>(`/sessions/${sessionId.current}/status`)
             if (response.data.status === 'AUTHENTICATED') {
                 if (response.data.me.jid) {
                     setJid(response.data.me.jid)

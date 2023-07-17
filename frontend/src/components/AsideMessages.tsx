@@ -4,6 +4,7 @@ import CustomInput from "./CustomInput"
 import Separator from "./Separator"
 import UserMessage from "./UserMessage"
 import { faSearch } from "@fortawesome/free-solid-svg-icons"
+import React from "react"
 
 interface AsideMessagesProps {
     contacts: ContactType[],
@@ -53,10 +54,10 @@ export default function AsideMessages({contacts, setSelectedContactId}: AsideMes
                 {
                     contacts.filter(contact => contact.name.includes(searchedValue)).sort(sortContacts).map(contact => {
                         return (
-                            <>
+                            <React.Fragment key={contact._id}>
                                 <UserMessage contact={contact} setSelectedContactId={setSelectedContactId} />
                                 <Separator type="x" />
-                            </>
+                            </React.Fragment>
                         )
                     })
                 }

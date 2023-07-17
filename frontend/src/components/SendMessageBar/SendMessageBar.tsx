@@ -8,7 +8,6 @@ import { ContactType } from "../../hooks/useContact"
 import { ContactContext } from "../../contexts/ContactContext"
 import useMessageApi from "../../hooks/useMessageApi"
 
-
 interface SendMessageBarProps {
     selectedContact: ContactType | undefined,
     selectedImage: File | null
@@ -33,6 +32,7 @@ export default function SendMessageBar({ selectedContact, selectedImage, clearFi
 
     async function stopRecordingAudio() {
         try {
+            setLoadingMessage(true)
             if (jid === undefined || sessionId === undefined) {
                 throw new Error('An session error ocurred')
             }
@@ -43,14 +43,15 @@ export default function SendMessageBar({ selectedContact, selectedImage, clearFi
             if (sentAudio === false) {
                 throw new Error('An error ocurred when upload audio')
             }
-            // const apiAudio = await sendAudio({
-            //   jid: jid,
-            //   sessionId: sessionId,
-            //   url: `${import.meta.env.VITE_APP_BACKEND_API}/upload/${sentAudio.filename}`
-            // })
-            // if(apiAudio === false){
-            //   throw new Error('An error ocurred when sent audio to api')
-            // }
+            const apiAudio = await sendAudio({
+              jid: jid,
+              sessionId: sessionId.current,
+              // ARQUIVO ESTÁTICO UTILIZADO NOS TESTES POR ESTAR EM AMBIENTE LOCAL
+              url: 'https://cdn.freesound.org/previews/696/696291_4501195-lq.mp3' //`${import.meta.env.VITE_APP_BACKEND_API}/upload/${sentAudio.filename}`
+            })
+            if(apiAudio === false){
+              throw new Error('An error ocurred when sent audio to api')
+            }
              await sendMessage({
                 contactId: selectedContact!._id,
                 type: 'file',
@@ -59,6 +60,8 @@ export default function SendMessageBar({ selectedContact, selectedImage, clearFi
         } catch (error: any) {
             alert('Ocorreu um erro ao enviar o audio')
             console.log(error)
+        }finally {
+            setLoadingMessage(false)
         }
     }
 
@@ -76,17 +79,16 @@ export default function SendMessageBar({ selectedContact, selectedImage, clearFi
                 if (sentImage === false) {
                     throw new Error('An error ocurred when upload file')
                 }
-                /* EM AMBIENTE LOCAL A URL DA IMAGEM NÃO VAI ESTAR DISPONÍVEL PARA A API CONSUMIR
                 const apiMessage = await sendImage({
                   jid: jid,
-                  sessionId: sessionId,
-                  url: `${import.meta.env.VITE_APP_BACKEND_API}/upload/${sentImage.filename}`,
+                  sessionId: sessionId.current,
+                  // ARQUIVO ESTÁTICO UTILIZADO POR ESTAR EM AMBIENTE LOCAL
+                  url: 'https://img.freepik.com/psd-gratuitas/icone-do-whatsapp-isolado-ilustracao-de-renderizacao-3d_47987-9785.jpg',//`${import.meta.env.VITE_APP_BACKEND_API}/upload/${sentImage.filename}`,
                   caption: messageText
                 })
                 if(apiMessage === false){
                   throw new Error('An error ocurred when send image to API')
                 }
-                */
                 const sentMessage = await sendMessage({
                     contactId: selectedContact._id,
                     type: 'text',
@@ -99,7 +101,7 @@ export default function SendMessageBar({ selectedContact, selectedImage, clearFi
             } else {
                 const apiMessage = await sendText({
                     jid: jid,
-                    sessionId: sessionId,
+                    sessionId: sessionId.current,
                     message: messageText
                 })
                 if (apiMessage === false) {
@@ -111,7 +113,7 @@ export default function SendMessageBar({ selectedContact, selectedImage, clearFi
                     content: messageText
                 })
                 if (sentMessage === false) {
-                    throw new Error('An error ocurred whe send image to server')
+                    throw new Error('An error ocurred when send image to server')
                 }
             }
             setMessageText('')

@@ -6,7 +6,7 @@ interface SendMessageBarContainerProps {
 
 export default function SendMessageBarContainer({ children }: SendMessageBarContainerProps) {
     return (
-        <div className="h-24 bg-gray-700 p-5 flex items-center gap-2">
+        <div className="h-24 bg-gray-700 p-5 flex items-center gap-4">
             {children}
         </div>
     )

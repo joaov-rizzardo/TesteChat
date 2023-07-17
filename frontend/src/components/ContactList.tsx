@@ -6,6 +6,7 @@ import IconButton from "./IconButton";
 import { ContactType } from "./ContactsModal";
 import { useContext, useState } from "react";
 import { ContactContext } from "../contexts/ContactContext";
+import React from "react";
 
 
 interface ContactListProps {
@@ -45,7 +46,7 @@ export default function ContactList({ openUpdateList }: ContactListProps) {
                     return contact.name.includes(searchedValue)
                 }).map(contact => {
                     return (
-                        <>
+                        <React.Fragment key={contact._id}>
                             <div className="flex items-center text-gray-300 gap-5 px-4 py-3">
                                 <div className="w-10 h-10 rounded-full bg-gray-600 flex justify-center items-center">
                                     <FontAwesomeIcon icon={faUser} className="text-gray-900" />
@@ -71,7 +72,7 @@ export default function ContactList({ openUpdateList }: ContactListProps) {
                                 </div>
                             </div>
                             <Separator type="x" />
-                        </>
+                        </React.Fragment>
 
                     )
                 })}

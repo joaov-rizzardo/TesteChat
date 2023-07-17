@@ -20,7 +20,7 @@ export default function ContactMessages({selectedContact}: ContactMessagesProps)
                     selectedContact.messages.map(message => {
                         if (message.type === 'text') {
                             return (
-                                <Message.Container type="sent">
+                                <Message.Container key={message._id} type="sent">
                                     {message.image !== undefined && (
                                         <Message.Image filename={message.image} />
                                     )}
@@ -30,7 +30,7 @@ export default function ContactMessages({selectedContact}: ContactMessagesProps)
                             )
                         } else {
                             return (
-                                <Message.Container type="sent">
+                                <Message.Container type="sent" key={message._id}>
                                     <Message.Audio audioFilename={message.content} />
                                     <Message.Hour hour={convertDatetimeStringToTimeString(message.createdAt)} />
                                 </Message.Container>

@@ -9,11 +9,10 @@ export default function QrCodeScanner() {
     }, [])
 
     useEffect(() => {
-        if(sessionId !== ''){
-            console.log(sessionId)
+        if(sessionId.current !== ''){
             watchSessionStatus()
         }
-    }, [sessionId])
+    }, [sessionId.current])
 
     async function watchSessionStatus(){
         const jid = await checkQrCode()

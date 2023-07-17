@@ -8,8 +8,7 @@ interface UserMessageProps {
     setSelectedContactId: React.Dispatch<React.SetStateAction<string>>
 }
 export default function UserMessage({contact, setSelectedContactId}: UserMessageProps) {
-    const textMessages = contact.messages.filter(message => message.type === 'text')
-    const lastMessage = textMessages[textMessages.length - 1]
+    const lastMessage = contact.messages[contact.messages.length - 1]
     const timeString = lastMessage?.createdAt !== undefined ? convertDatetimeStringToTimeString(lastMessage.createdAt) : ''
     return (
         <div 
@@ -21,7 +20,9 @@ export default function UserMessage({contact, setSelectedContactId}: UserMessage
             </div>
             <div className="flex-1">
                 <h1 className="text-lg font-bold">{contact.name}</h1>
-                <p className="text-sm truncate w-80">{lastMessage?.content ?? ''}</p>
+                <p className="text-sm truncate w-80">
+                    {lastMessage?.type === 'file' ? 'Áudio' : (lastMessage?.content === '' ? 'Imagem' : lastMessage?.content ?? '')}
+                </p>
             </div>
             <div className="h-full flex items-start">
                 <span>{timeString}</span>

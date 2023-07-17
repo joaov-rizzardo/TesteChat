@@ -1,10 +1,10 @@
-import { ReactNode, createContext } from "react";
+import { MutableRefObject, ReactNode, createContext } from "react";
 import useSession from "../hooks/useSession";
 
 type SessionContextType = {
     jid?: string
     qrcode?: string
-    sessionId: string
+    sessionId: MutableRefObject<string>
     checkQrCode: () => Promise<string | undefined>,
     searchQrCode: () => Promise<void>
 }
